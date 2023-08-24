@@ -1,4 +1,4 @@
-package bo.edu.ucb.sis213;
+package bo.edu.ucb.sis213.view;
 
 import javax.swing.JPanel;
 import javax.swing.JButton;
@@ -13,13 +13,23 @@ import java.sql.SQLException;
 
 import javax.swing.SwingConstants;
 
-public class MenuPrincipalGUI extends JPanel {// El contentPane que vas a usar
-	private FuncionesBD func = new FuncionesBD();
-	private Connection connection;
-	private int usuarioId;
+import bo.edu.ucb.sis213.dao.Conexion;
+import bo.edu.ucb.sis213.dao.HistoricoDao;
+import bo.edu.ucb.sis213.dao.UsuarioDao;
 
-	public MenuPrincipalGUI(Connection connection, int usuarioId) {
-		this.connection = connection;
+public class MenuPrincipalGUI extends JPanel {// El contentPane que vas a usar
+	private UsuarioDao func = new UsuarioDao();
+	
+	private int usuarioId;
+	private Connection connection;
+
+	public MenuPrincipalGUI( int usuarioId) {
+		try (Connection conn = Conexion.getConnection()) {
+            connection=conn;
+        } catch (SQLException e) {
+            
+            e.printStackTrace();
+        }
 		this.usuarioId = usuarioId;
 		initComponents();
 	}
@@ -28,6 +38,7 @@ public class MenuPrincipalGUI extends JPanel {// El contentPane que vas a usar
 	}
 
 	private void initComponents() {
+		
 		setLayout(null);
 		JLabel lblNewLabel = new JLabel("Menu Principal");
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -55,7 +66,7 @@ public class MenuPrincipalGUI extends JPanel {// El contentPane que vas a usar
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					func.consultarSaldo(connection, usuarioId);
+					func.consultarSaldo(usuarioId);
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
@@ -64,7 +75,7 @@ public class MenuPrincipalGUI extends JPanel {// El contentPane que vas a usar
 		button_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					func.realizarDeposito(connection, usuarioId, ingresaValor("Ingresar cantidad a depositar: $"));
+					func.realizarDeposito(usuarioId, ingresaValor("Ingresar cantidad a depositar: $"));
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
@@ -73,7 +84,7 @@ public class MenuPrincipalGUI extends JPanel {// El contentPane que vas a usar
 		button_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					func.realizarRetiro(connection, usuarioId, ingresaValor("Ingresar cantidad a retirar: $"));
+					func.realizarRetiro( usuarioId, ingresaValor("Ingresar cantidad a retirar: $"));
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
@@ -82,7 +93,7 @@ public class MenuPrincipalGUI extends JPanel {// El contentPane que vas a usar
 		button_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					func.cambiarPIN(connection, usuarioId, ingresaValor("Ingrese su PIN actual: "));
+					func.cambiarPIN( usuarioId, ingresaValor("Ingrese su PIN actual: "));
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
@@ -90,8 +101,9 @@ public class MenuPrincipalGUI extends JPanel {// El contentPane que vas a usar
 		});
 		button_4.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				HistoricoDao histo=new HistoricoDao();
 				try {
-					func.consultarHistorico(connection, usuarioId);
+					histo.consultarHistorico( connection,usuarioId);
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}

@@ -34,4 +34,35 @@ INSERT INTO historico (usuario_id, tipo_operacion, cantidad) VALUES (3, 'depósi
 INSERT INTO historico (usuario_id, tipo_operacion, cantidad) VALUES (4, 'depósito', 750.0);
 INSERT INTO historico (usuario_id, tipo_operacion, cantidad) VALUES (5, 'depósito', 3000.0);
 
+--Trigger registra depositos
+
+DELIMITER //
+CREATE TRIGGER depositos
+AFTER UPDATE ON usuarios
+FOR EACH ROW
+BEGIN
+    IF NEW.saldo > OLD.saldo THEN
+        INSERT INTO historico (usuario_id, tipo_operacion, cantidad)
+        VALUES (NEW.id, 'Deposito', NEW.saldo - OLD.saldo);
+    END IF;
+END;
+//
+DELIMITER ;
+
+
+-- Trigger registra retiros:
+
+DELIMITER //
+CREATE TRIGGER retiros
+AFTER UPDATE ON usuarios
+FOR EACH ROW
+BEGIN
+    IF NEW.saldo < OLD.saldo THEN
+        INSERT INTO historico (usuario_id, tipo_operacion, cantidad)
+        VALUES (NEW.id, 'Retiro', OLD.saldo - NEW.saldo);
+    END IF;
+END;
+//
+DELIMITER ;
+
 
