@@ -23,13 +23,9 @@ public class MenuPrincipalGUI extends JPanel {// El contentPane que vas a usar
 	private int usuarioId;
 	private Connection connection;
 
-	public MenuPrincipalGUI( int usuarioId) {
-		try (Connection conn = Conexion.getConnection()) {
-            connection=conn;
-        } catch (SQLException e) {
-            
-            e.printStackTrace();
-        }
+	public MenuPrincipalGUI(Connection connection,int usuarioId) {
+		this.connection=connection;
+		
 		this.usuarioId = usuarioId;
 		initComponents();
 	}
@@ -66,7 +62,7 @@ public class MenuPrincipalGUI extends JPanel {// El contentPane que vas a usar
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					func.consultarSaldo(usuarioId);
+					func.consultarSaldo(connection,usuarioId);
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
@@ -75,7 +71,7 @@ public class MenuPrincipalGUI extends JPanel {// El contentPane que vas a usar
 		button_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					func.realizarDeposito(usuarioId, ingresaValor("Ingresar cantidad a depositar: $"));
+					func.realizarDeposito(connection,usuarioId, ingresaValor("Ingresar cantidad a depositar: $"));
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
@@ -84,7 +80,7 @@ public class MenuPrincipalGUI extends JPanel {// El contentPane que vas a usar
 		button_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					func.realizarRetiro( usuarioId, ingresaValor("Ingresar cantidad a retirar: $"));
+					func.realizarRetiro(connection, usuarioId, ingresaValor("Ingresar cantidad a retirar: $"));
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
@@ -93,7 +89,7 @@ public class MenuPrincipalGUI extends JPanel {// El contentPane que vas a usar
 		button_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					func.cambiarPIN( usuarioId, ingresaValor("Ingrese su PIN actual: "));
+					func.cambiarPIN(connection, usuarioId, ingresaValor("Ingrese su PIN actual: "));
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}

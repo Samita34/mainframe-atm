@@ -19,12 +19,12 @@ CREATE TABLE IF NOT EXISTS historico (
 
 -- Insertar datos de ejemplo
 -- Insertar datos de ejemplo en usuarios
-INSERT INTO usuarios (nombre, pin, saldo) VALUES 
-('Juan Perez', 1234, 1000.0),
-('Ana Ramirez', 5678, 2500.0),
-('Carlos Gomez', 9012, 500.0),
-('Marta Torres', 3456, 750.0),
-('Luisa Fernandez', 7890, 3000.0);
+INSERT INTO usuarios (nombre, pin, saldo,alias) VALUES 
+('Juan Perez', 1234, 1000.0,"jperez"),
+('Ana Ramirez', 5678, 2500.0,"aramirez"),
+('Carlos Gomez', 9012, 500.0,"cgomez"),
+('Marta Torres', 3456, 750.0,"mtorres"),
+('Luisa Fernandez', 7890, 3000.0,"lfernandez");
 
 -- Insertar datos de ejemplo en historico (asumiendo que los IDs de los usuarios coinciden con los valores insertados anteriormente)
 -- Juan Perez hizo un depósito de 200.0

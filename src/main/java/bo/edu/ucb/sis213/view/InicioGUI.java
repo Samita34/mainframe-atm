@@ -1,4 +1,4 @@
-package bo.edu.ucb.sis213;
+package bo.edu.ucb.sis213.view;
 
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -8,7 +8,6 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import bo.edu.ucb.sis213.dao.Conexion;
-import bo.edu.ucb.sis213.view.MenuPrincipalGUI;
 import bo.edu.ucb.sis213.dao.UsuarioDao;
 
 import javax.swing.JLabel;
@@ -36,25 +35,26 @@ public class InicioGUI extends JFrame {
 	private JTextField userField;
 	private JPasswordField passwordField;
 	public int usuarioId;
+	Connection connection;
 
-	private int intentos = 3;
+	private int intentos = 2;
+	public void run() {
+		try {
 
-	public static void main(String[] args) {
+                InicioGUI frame = new InicioGUI(connection);
+                frame.setLocationRelativeTo(null);
+                frame.setVisible(true);
 
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					InicioGUI frame = new InicioGUI();
-					frame.setLocationRelativeTo(null);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        
 
-	public InicioGUI() {
+    }
+	
+
+	public InicioGUI(Connection connection) {
+		this.connection=connection;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
 		setBounds(100, 100, 452, 330);
@@ -116,9 +116,10 @@ public class InicioGUI extends JFrame {
 				UsuarioDao func=new UsuarioDao();
 				
 				try {
-					if(func.iniciaSesion(intentos, userField, passwordField)){
-						
-						MenuPrincipalGUI menu = new MenuPrincipalGUI(usuarioId);
+					usuarioId=func.iniciaSesion(connection,intentos, userField, passwordField);
+					if(usuarioId!=-1){
+										
+						MenuPrincipalGUI menu = new MenuPrincipalGUI(connection,usuarioId);
 							intentos = 3;
 					        
 							setContentPane(menu);

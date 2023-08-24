@@ -14,44 +14,37 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.DefaultCaret;
 
-import bo.edu.ucb.sis213.InicioGUI;
+import bo.edu.ucb.sis213.view.InicioGUI;
 import bo.edu.ucb.sis213.view.MenuPrincipalGUI;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class UsuarioDao {
-    private Connection connection;
     public UsuarioDao() {
-        try (Connection conn = Conexion.getConnection()) {
-            connection=conn;
-        } catch (SQLException e) {
-            
-            e.printStackTrace();
-        }
+        
     }
     
     
 
-    public boolean iniciaSesion(int intentos,JTextField userField,JPasswordField passwordField) throws SQLException {
+    public int iniciaSesion(Connection connection,int intentos,JTextField userField,JPasswordField passwordField) throws SQLException {
         String alias = userField.getText();
 				char[] passwordChars = passwordField.getPassword();
 				String password = new String(passwordChars);
 				int pinIngresado = Integer.parseInt(password);
 				
 					
-					int usuarioId = validarPin(pinIngresado, alias);
+					int usuarioId = validarPin(connection,pinIngresado, alias);
 					if (usuarioId != -1) {
-						InicioGUI ini = new InicioGUI();
-						ini.usuarioId=usuarioId;
-                        return true;
+						
+                        return usuarioId;
 					} else {
 						//intentos--;
 						if (intentos > 0) {
 							JOptionPane.showMessageDialog(null,
 									"PIN o alias incorrecto. Le quedan " + intentos + " intentos.", "Error",
 									JOptionPane.ERROR_MESSAGE);
-                                    return false;
+                                    return -1;
                                     
 						} else {
 							JOptionPane.showMessageDialog(null,
@@ -62,9 +55,9 @@ public class UsuarioDao {
 						}
 					}
 				
-                return false;    
+                return -1;    
     }
-    public  int validarPin( int pinIngresado, String alias) throws SQLException {
+    public  int validarPin(Connection connection, int pinIngresado, String alias) throws SQLException {
 		String query = "SELECT id FROM usuarios WHERE pin = ? and alias = ?";
 		try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 			preparedStatement.setInt(1, pinIngresado);
@@ -78,7 +71,7 @@ public class UsuarioDao {
 		}
 	}
 
-    public void consultarSaldo(int usuarioId) throws SQLException {
+    public void consultarSaldo(Connection connection,int usuarioId) throws SQLException {
         String query = "SELECT nombre, saldo FROM usuarios WHERE id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, usuarioId);
@@ -132,7 +125,7 @@ public class UsuarioDao {
         }
     }*/
 
-    public void realizarDeposito( int usuarioId, int cantidad) throws SQLException {
+    public void realizarDeposito(Connection connection, int usuarioId, int cantidad) throws SQLException {
         if (cantidad > 0) {
             String saldoQuery = "SELECT saldo FROM usuarios WHERE id = ?";
             try (PreparedStatement saldoStatement = connection.prepareStatement(saldoQuery)) {
@@ -155,7 +148,7 @@ public class UsuarioDao {
         }
     }
 
-    public void realizarRetiro(int usuarioId, int cantidad) throws SQLException {
+    public void realizarRetiro(Connection connection,int usuarioId, int cantidad) throws SQLException {
         if (cantidad > 0) {
             String saldoQuery = "SELECT saldo FROM usuarios WHERE id = ?";
             try (PreparedStatement saldoStatement = connection.prepareStatement(saldoQuery)) {
@@ -181,7 +174,7 @@ public class UsuarioDao {
         }
     }
 
-    public void cambiarPIN(int usuarioId, int pinIngresado) throws SQLException {
+    public void cambiarPIN(Connection connection,int usuarioId, int pinIngresado) throws SQLException {
         String query = "SELECT id FROM usuarios WHERE id = ? AND pin = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, usuarioId);
