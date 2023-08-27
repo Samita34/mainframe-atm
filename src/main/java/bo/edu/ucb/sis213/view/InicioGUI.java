@@ -1,17 +1,11 @@
 package bo.edu.ucb.sis213.view;
 
-import java.awt.EventQueue;
 import java.awt.Font;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-
-import bo.edu.ucb.sis213.dao.Conexion;
 import bo.edu.ucb.sis213.dao.UsuarioDao;
-
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
@@ -22,14 +16,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.SwingConstants;
 import java.sql.Connection;
-
 import java.sql.SQLException;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+
 
 public class InicioGUI extends JFrame {
-	
-	
 
 	private JPanel contentPane;
 	private JTextField userField;
@@ -38,23 +28,22 @@ public class InicioGUI extends JFrame {
 	Connection connection;
 
 	private int intentos = 2;
+
 	public void run() {
 		try {
 
-                InicioGUI frame = new InicioGUI(connection);
-                frame.setLocationRelativeTo(null);
-                frame.setVisible(true);
+			InicioGUI frame = new InicioGUI(connection);
+			frame.setLocationRelativeTo(null);
+			frame.setVisible(true);
 
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-    }
-	
+	}
 
 	public InicioGUI(Connection connection) {
-		this.connection=connection;
+		this.connection = connection;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
 		setBounds(100, 100, 452, 330);
@@ -113,73 +102,26 @@ public class InicioGUI extends JFrame {
 		contentPane.add(btnIniciarSesion, gbc_btnIniciarSesion);
 		btnIniciarSesion.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				UsuarioDao func=new UsuarioDao();
-				
+				UsuarioDao func = new UsuarioDao();
+
 				try {
-					usuarioId=func.iniciaSesion(connection,intentos, userField, passwordField);
-					if(usuarioId!=-1){
-										
-						MenuPrincipalGUI menu = new MenuPrincipalGUI(connection,usuarioId);
-							intentos = 3;
-					        
-							setContentPane(menu);
-							revalidate();
-					}
-					else{
+					usuarioId = func.iniciaSesion(connection, intentos, userField, passwordField);
+					if (usuarioId != -1) {
+
+						MenuPrincipalGUI menu = new MenuPrincipalGUI(connection, usuarioId);
+						intentos = 3;
+
+						setContentPane(menu);
+						revalidate();
+					} else {
 						intentos--;
 					}
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				
-				
-
-				/*String alias = userField.getText();
-				char[] passwordChars = passwordField.getPassword();
-				String password = new String(passwordChars);
-				int pinIngresado = Integer.parseInt(password);
-				try {
-					Connection connection = Conexion.getConnection();
-					int usuarioId = validarPin(connection, pinIngresado, alias);
-					if (usuarioId != -1) {
-						MenuPrincipalGUI menu = new MenuPrincipalGUI(connection, usuarioId);
-						intentos = 3;
-						setContentPane(menu);
-						revalidate();
-					} else {
-						intentos--;
-						if (intentos > 0) {
-							JOptionPane.showMessageDialog(null,
-									"PIN o alias incorrecto. Le quedan " + intentos + " intentos.", "Error",
-									JOptionPane.ERROR_MESSAGE);
-						} else {
-							JOptionPane.showMessageDialog(null,
-									"PIN o alias incorrecto. Ha excedido el número de intentos.", "Error",
-									JOptionPane.ERROR_MESSAGE);
-						}
-					}
-				} catch (SQLException ex) {
-					JOptionPane.showMessageDialog(null, "Error al conectar a la base de datos: " + ex.getMessage(),
-							"Error", JOptionPane.ERROR_MESSAGE);
-				}*/
 			}
 		});
 	}
-	
-	
 
-	public static int validarPin(Connection connection, int pinIngresado, String alias) throws SQLException {
-		String query = "SELECT id FROM usuarios WHERE pin = ? and alias = ?";
-		try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-			preparedStatement.setInt(1, pinIngresado);
-			preparedStatement.setString(2, alias);
-			ResultSet resultSet = preparedStatement.executeQuery();
-			if (resultSet.next()) {
-				return resultSet.getInt("id");
-			} else {
-				return -1;
-			}
-		}
-	}
 }

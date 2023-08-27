@@ -4,16 +4,12 @@ import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.SQLException;
-
 import javax.swing.SwingConstants;
-
-import bo.edu.ucb.sis213.dao.Conexion;
 import bo.edu.ucb.sis213.dao.HistoricoDao;
 import bo.edu.ucb.sis213.dao.UsuarioDao;
 
